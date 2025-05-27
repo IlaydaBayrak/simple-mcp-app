@@ -1,5 +1,5 @@
 import { Mastra } from '@mastra/core';
-import { agent } from '../../simple_agent';
+import { agent } from '../../simple_agent.ts';
 import ChatPage from '../pages/ChatPage';
 
 export const mastra = new Mastra({
