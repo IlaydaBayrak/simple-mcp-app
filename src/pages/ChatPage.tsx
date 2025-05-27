@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useAgent } from '@mastra/core';
+import { useAgent } from '@mastra/core/react';
 
 export default function ChatPage() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
-  const { agent } = useAgent('simpleAgent');
+  const agent = useAgent('simpleAgent');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,11 +16,16 @@ export default function ChatPage() {
     // Add user message to chat
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
 
-    // Get agent response
-    const response = await agent.chat(userMessage);
-    
-    // Add agent response to chat
-    setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+    try {
+      // Get agent response
+      const response = await agent.generate(userMessage);
+      
+      // Add agent response to chat
+      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Üzgünüm, bir hata oluştu.' }]);
+    }
   };
 
   return (
